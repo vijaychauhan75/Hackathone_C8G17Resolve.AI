@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 from agents.log_reader import detect_incidents
+from agents.rca import generate_rca
 
 router = APIRouter()
 
@@ -18,3 +19,20 @@ async def upload_log(file: UploadFile = File(...)):
         "incidents": incidents,
         "message": "Log uploaded successfully"
     })
+
+
+@router.get("/incidents")
+async def list_incidents():
+    return {"incidents": []}
+
+
+@router.get("/incidents/{incident_id}")
+async def get_incident(incident_id: str):
+    incident = {"line": 1, "message": "example", "severity": "ERROR"}
+    rca = generate_rca(incident)
+    return {
+        "incident": incident,
+        "rca": rca,
+        "remediation": {"recommendations": [], "sources": []},
+        "cookbook": {"steps": [], "commands": [], "validation": "", "rollback": ""},
+    }
