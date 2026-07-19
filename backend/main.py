@@ -6,6 +6,8 @@ FastAPI Backend Entry Point
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.routes import router as api_router
+
 app = FastAPI(
     title="Resolve.AI - Incident Analysis Suite",
     description="Multi-Agent DevOps Incident Analysis powered by LangGraph",
@@ -24,3 +26,5 @@ app.add_middleware(
 @app.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "Resolve.AI Backend"}
+
+app.include_router(api_router, prefix="/api")
